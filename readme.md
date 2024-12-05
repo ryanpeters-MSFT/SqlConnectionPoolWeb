@@ -19,6 +19,8 @@ dotnet run
 curl.exe http://localhost:5292
 ```
 
+The response of the request will return some metadata about the SQL connection itself as well as the results of multiple commands invoked on the same connection.
+
 In SSMS, run the following to see how many connections have been established:
 
 ```sql
@@ -26,7 +28,9 @@ In SSMS, run the following to see how many connections have been established:
 sp_who 'CONNECTION-USERNAME'
 ```
 
-After each invocation of the request, it will create a new *sleeping* connection once it has completed the command. In this example, if the `curl` command above is invoked 4 times, it will create 4 entries:
+After each invocation of the request, it will create a new *sleeping* connection once it has completed the command. The value of `spid` in the `sp_who` command will correlate to the value of `serverProcessId` in the web response. 
+
+In this example, if the `curl` command above is invoked 4 times, it will create 4 entries:
 
 | spid | ecid | status | loginame |	hostname | blk | dbname | cmd | request_id |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |

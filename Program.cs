@@ -17,10 +17,22 @@ app.MapGet("/", () =>
 
     connection.Open();
 
-    // select the current server date
-    var command = new SqlCommand("SELECT GETDATE() AS CurrentDateTime;", connection);
+    Console.WriteLine($"ClientConnectionId: {connection.ClientConnectionId}");
+    Console.WriteLine($"ServerProcessId: {connection.ServerProcessId}");
 
-    return command.ExecuteScalar();
+    var serverCommand = new SqlCommand("SELECT @@SERVERNAME;", connection);
+    var versionCommand = new SqlCommand("SELECT @@VERSION;", connection);
+    var timeCommand = new SqlCommand("SELECT GETDATE();", connection);
+
+    return new 
+    {
+        server = serverCommand.ExecuteScalar() as string,
+        version = versionCommand.ExecuteScalar() as string,
+        date = timeCommand.ExecuteScalar(),
+        connection.ClientConnectionId,
+        connection.ServerProcessId,
+        connection.WorkstationId
+    };
 });
 
 app.Run();
